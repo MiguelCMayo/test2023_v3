@@ -1,0 +1,208 @@
+openapi: 3.0.1
+info:
+  title: INDITEX API
+  description: Application/service in SpringBoot that provides a rest query endpoint
+  version: "1.0"
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /prices:
+    get:
+      tags:
+        - price-controller
+      operationId: getAllPrices
+      responses:
+        "200":
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseDTOListPriceDTO'
+    post:
+      tags:
+        - price-controller
+      operationId: createPrice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Price'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseDTOPrice'
+  /prices/{id}:
+    get:
+      tags:
+        - price-controller
+      operationId: searchPriceById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseDTOPriceDTO'
+    delete:
+      tags:
+        - price-controller
+      operationId: deletePriceById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseDTOVoid'
+  /prices/find_prices_by_criterion:
+    get:
+      tags:
+        - price-controller
+      operationId: findPricesByCriterion
+      parameters:
+        - name: applicationDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: productId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: brandId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseDTOListPriceDTO'
+components:
+  schemas:
+    Brand:
+      type: object
+      properties:
+        brandId:
+          type: string
+        brandName:
+          type: string
+    Price:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        brand:
+          $ref: '#/components/schemas/Brand'
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        tariffId:
+          type: integer
+          format: int64
+        productId:
+          type: integer
+          format: int64
+        priority:
+          type: integer
+          format: int32
+        price:
+          type: number
+        currency:
+          type: string
+    ApiResponseDTOPrice:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/Price'
+    ApiResponseDTOListPriceDTO:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceDTO'
+    PriceDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        brandId:
+          type: string
+        brandName:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        tariffId:
+          type: integer
+          format: int64
+        productId:
+          type: integer
+          format: int64
+        priority:
+          type: integer
+          format: int32
+        price:
+          type: number
+        currency:
+          type: string
+    ApiResponseDTOPriceDTO:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/PriceDTO'
+    ApiResponseDTOVoid:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          type: object
